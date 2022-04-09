@@ -1,6 +1,5 @@
 package com.kathi.github.controller;
 
-import com.kathi.github.utils.Utils;
 import com.kathi.github.model.Author;
 import com.kathi.github.model.Repository;
 import com.kathi.github.model.Request;
@@ -13,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -31,10 +29,9 @@ public class GitController {
             @ApiResponse(code = 404, message = "not found!!!"),
             @ApiResponse(code = 415, message = "Un supported media format!!!") })
 
-    @PostMapping(value = "/author", produces = "application/json", consumes = {"application/json", "application/xml"})
-    public Author getAuthor(@RequestBody Request reqData, @RequestHeader Map<String, String> headers){
-        String accepts = Utils.getAcceptsFromHeader(headers);
-        return gitService.getAuthor(reqData, accepts);
+    @GetMapping(value = "/author/{userId}", produces = "application/json")
+    public Author getAuthor(@PathVariable String userId,  @RequestHeader("accept") String accepts){
+        return gitService.getAuthor(userId, accepts);
     }
 
     @ApiOperation(value = "Returns a list of Repositories for a given User.",
@@ -43,22 +40,20 @@ public class GitController {
             @ApiResponse(code = 200, message = "Success|OK"),
             @ApiResponse(code = 404, message = "not found!!!"),
             @ApiResponse(code = 415, message = "Un supported media format!!!") })
-    @PostMapping(value = "/repositories", produces = "application/json", consumes = {"application/json", "application/xml"})
-    public Repository getRepositories(@RequestBody Request reqData, @RequestHeader Map<String, String> headers){
-        String accepts = Utils.getAcceptsFromHeader(headers);
-        return gitService.getRepositories(reqData, accepts);
+    @GetMapping(value = "/repositories/{userId}", produces = "application/json")
+    public Repository getRepositories(@PathVariable String userId, @RequestHeader("accept") String accepts){
+        return gitService.getRepositories(userId, accepts);
     }
 
-    @PostMapping(value = "/branches", produces = "application/json", consumes = {"application/json", "application/xml"})
+    @GetMapping(value = "/branches/{userId}/{repo}", produces = "application/json")
     @ApiOperation(value = "Returns a list of Branches for a given user and repository",
     response = Repository.class, tags = "Get Branches")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Success|OK"),
             @ApiResponse(code = 404, message = "not found!!!"),
             @ApiResponse(code = 415, message = "Un supported media format!!!") })
-    public Repository getBranches(@RequestBody Request reqData, @RequestHeader Map<String, String> headers){
-        String accepts = Utils.getAcceptsFromHeader(headers);
-        return gitService.getBranches(reqData, accepts);
+    public Repository getBranches(@PathVariable String userId, @PathVariable String repo,  @RequestHeader("accept") String accepts){
+        return gitService.getBranches(userId, repo, accepts);
     }
 
     @PostMapping(value = "/all-user-info", produces = "application/json", consumes = {"application/json", "application/xml"})
@@ -68,8 +63,7 @@ public class GitController {
             @ApiResponse(code = 200, message = "Success|OK"),
             @ApiResponse(code = 404, message = "not found!!!"),
             @ApiResponse(code = 415, message = "Un supported media format!!!") })
-    public List<Repository> getAllRepositoriesAndBranches(@RequestBody Request reqData, @RequestHeader Map<String, String> headers){
-        String accepts = Utils.getAcceptsFromHeader(headers);
+    public List<Repository> getAllRepositoriesAndBranches(@RequestBody Request reqData, @RequestHeader("accept") String accepts){
         return gitService.getAllUserInfo(reqData, accepts);
     }
 }

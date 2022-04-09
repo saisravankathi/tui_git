@@ -18,36 +18,32 @@ public class GitService {
     @Autowired
     GITApiRest gitApiRest;
 
-    public Author getAuthor(Request reqMap, String accepts){
+    public Author getAuthor(String userId, String accepts){
 
-        if(StringUtils.hasLength(reqMap.getUser()) && StringUtils.hasLength(accepts)){
-            String userName = reqMap.getUser();
-            return gitApiRest.checkForUserExistence(userName, accepts);
+        if(StringUtils.hasLength(userId) && StringUtils.hasLength(accepts)){
+            return gitApiRest.checkForUserExistence(userId, accepts);
         }
 
         return new Author();
     }
 
-    public Repository getRepositories(Request reqMap, String accepts) {
+    public Repository getRepositories(String userId, String accepts) {
 
         Repository r = new Repository();
-        if(StringUtils.hasLength(reqMap.getUser()) && StringUtils.hasLength(accepts)){
-            String userName = reqMap.getUser();
-            Author a = getAuthor(reqMap, accepts);
-            r = gitApiRest.getRepositoriesForUser(userName, accepts);
+        if(StringUtils.hasLength(userId) && StringUtils.hasLength(accepts)){
+            Author a = getAuthor(userId, accepts);
+            r = gitApiRest.getRepositoriesForUser(userId, accepts);
             r.setAuthor(a);
         }
         return r;
     }
 
-    public Repository getBranches(Request reqMap, String accepts){
+    public Repository getBranches(String userId, String repo,  String accepts){
 
         Repository r = new Repository();
-        if(StringUtils.hasLength(reqMap.getUser()) && StringUtils.hasLength(accepts) && StringUtils.hasLength(reqMap.getRepo())){
-            String userName = reqMap.getUser();
-            String repo = reqMap.getRepo();
-            Author a = getAuthor(reqMap, accepts);
-            r = gitApiRest.getBranchesForTheRepository(userName, accepts, repo);
+        if(StringUtils.hasLength(userId) && StringUtils.hasLength(accepts) && StringUtils.hasLength(repo)){
+            Author a = getAuthor(userId, accepts);
+            r = gitApiRest.getBranchesForTheRepository(userId, accepts, repo);
             r.setAuthor(a);
         }
         return r;
@@ -61,12 +57,11 @@ public class GitService {
             String userName = reqMap.getUser();
 
             // calling of Services Starts.
-            Repository r = this.getRepositories(reqMap, accepts);
+            Repository r = this.getRepositories(userName, accepts);
             List<String> repositories = r.getRepositories();
             if(repositories != null && repositories.size() > 0){
                 for(String rep: repositories){
-                    reqMap.setRepo(rep);
-                    allRepositories.add(this.getBranches(reqMap, accepts));
+                    allRepositories.add(this.getBranches(userName, rep, accepts));
                 }
             }
         }
