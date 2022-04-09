@@ -10,6 +10,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -30,7 +31,7 @@ public class GitController {
             @ApiResponse(code = 415, message = "Un supported media format!!!") })
 
     @GetMapping(value = "/author/{userId}", produces = "application/json")
-    public Author getAuthor(@PathVariable String userId,  @RequestHeader("accept") String accepts){
+    public Mono<Author> getAuthor(@PathVariable String userId, @RequestHeader("accept") String accepts){
         return gitService.getAuthor(userId, accepts);
     }
 
@@ -41,7 +42,7 @@ public class GitController {
             @ApiResponse(code = 404, message = "not found!!!"),
             @ApiResponse(code = 415, message = "Un supported media format!!!") })
     @GetMapping(value = "/repositories/{userId}", produces = "application/json")
-    public Repository getRepositories(@PathVariable String userId, @RequestHeader("accept") String accepts){
+    public Mono<Repository> getRepositories(@PathVariable String userId, @RequestHeader("accept") String accepts){
         return gitService.getRepositories(userId, accepts);
     }
 
@@ -52,18 +53,18 @@ public class GitController {
             @ApiResponse(code = 200, message = "Success|OK"),
             @ApiResponse(code = 404, message = "not found!!!"),
             @ApiResponse(code = 415, message = "Un supported media format!!!") })
-    public Repository getBranches(@PathVariable String userId, @PathVariable String repo,  @RequestHeader("accept") String accepts){
+    public Mono<Repository> getBranches(@PathVariable String userId, @PathVariable String repo,  @RequestHeader("accept") String accepts){
         return gitService.getBranches(userId, repo, accepts);
     }
 
     @PostMapping(value = "/all-user-info", produces = "application/json", consumes = {"application/json", "application/xml"})
     @ApiOperation(value = "Returns all branches with last commit IDSs when user information is provided",
-    response = List.class, tags = "Get Branches and Last Commit Information")
+    response = Repository.class, responseContainer = "List", tags = "Get Branches and Last Commit Information")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Success|OK"),
             @ApiResponse(code = 404, message = "not found!!!"),
             @ApiResponse(code = 415, message = "Un supported media format!!!") })
-    public List<Repository> getAllRepositoriesAndBranches(@RequestBody Request reqData, @RequestHeader("accept") String accepts){
+    public Mono<List<Repository>> getAllRepositoriesAndBranches(@RequestBody Request reqData, @RequestHeader("accept") String accepts){
         return gitService.getAllUserInfo(reqData, accepts);
     }
 }

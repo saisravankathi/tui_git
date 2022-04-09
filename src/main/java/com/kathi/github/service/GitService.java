@@ -7,6 +7,8 @@ import com.kathi.github.model.Request;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,53 +20,62 @@ public class GitService {
     @Autowired
     GITApiRest gitApiRest;
 
-    public Author getAuthor(String userId, String accepts){
+    public Mono<Author> getAuthor(String userId, String accepts){
 
         if(StringUtils.hasLength(userId) && StringUtils.hasLength(accepts)){
-            return gitApiRest.checkForUserExistence(userId, accepts);
+            return Mono.just(gitApiRest.checkForUserExistence(userId, accepts)).log();
         }
 
-        return new Author();
+        return Mono.just(new Author()).log();
     }
 
-    public Repository getRepositories(String userId, String accepts) {
+    public Mono<Repository> getRepositories(String userId, String accepts) {
 
-        Repository r = new Repository();
         if(StringUtils.hasLength(userId) && StringUtils.hasLength(accepts)){
-            Author a = getAuthor(userId, accepts);
-            r = gitApiRest.getRepositoriesForUser(userId, accepts);
-            r.setAuthor(a);
+            Mono<Author> a = getAuthor(userId, accepts);
+            final Repository r = gitApiRest.getRepositoriesForUser(userId, accepts);
+            a.subscribe(author -> {
+                r.setAuthor(author);
+            }).dispose();
+            return Mono.just(r).log();
         }
-        return r;
+        return Mono.just(new Repository()).log();
     }
 
-    public Repository getBranches(String userId, String repo,  String accepts){
+    public Mono<Repository> getBranches(String userId, String repo,  String accepts){
 
-        Repository r = new Repository();
         if(StringUtils.hasLength(userId) && StringUtils.hasLength(accepts) && StringUtils.hasLength(repo)){
-            Author a = getAuthor(userId, accepts);
-            r = gitApiRest.getBranchesForTheRepository(userId, accepts, repo);
-            r.setAuthor(a);
+            Mono<Author> a = getAuthor(userId, accepts);
+            final Repository r = gitApiRest.getBranchesForTheRepository(userId, accepts, repo);
+            a.subscribe(author -> {
+                r.setAuthor(author);
+            }).dispose();
+            return Mono.just(r).log();
         }
-        return r;
+        return Mono.just(new Repository()).log();
     }
 
-    public List<Repository> getAllUserInfo(Request reqMap, String accepts) {
+    public Mono<List<Repository>> getAllUserInfo(Request reqMap, String accepts) {
 
-        List<Repository> allRepositories = new ArrayList<>();
+        Flux<Repository> allRepositories = Flux.just();
+        List<Mono<Repository>> monoList = new ArrayList<>();
 
         if(StringUtils.hasLength(reqMap.getUser()) && StringUtils.hasLength(accepts)) {
             String userName = reqMap.getUser();
 
             // calling of Services Starts.
-            Repository r = this.getRepositories(userName, accepts);
-            List<String> repositories = r.getRepositories();
-            if(repositories != null && repositories.size() > 0){
-                for(String rep: repositories){
-                    allRepositories.add(this.getBranches(userName, rep, accepts));
-                }
-            }
+            Mono<Repository> r = this.getRepositories(userName, accepts).log();
+            r.subscribe(
+                    repository -> {
+                        Mono<List<String>> reps = Mono.just(repository.getRepositories()).log();
+                        Flux<String> repsFlux = reps.flatMapIterable(list -> list).log();
+                        repsFlux.subscribe(repo -> {
+                            Mono<Repository> tempRep = this.getBranches(userName, repo, accepts).log();
+                            monoList.add(tempRep);
+                        }).dispose();
+                    }
+            ).dispose();
         }
-        return allRepositories;
+        return Flux.concat(monoList).collectList();
     }
 }
