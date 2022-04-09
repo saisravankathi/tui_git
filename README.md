@@ -36,7 +36,7 @@ This Springboot project lets us fetch the details of all the user owned reposito
 #### Get all branches and commit IDs in their repositories for a given user.
 
 ```http
-  GET /tui/all-user-info/${userId}
+  POST /tui/all-user-info
 ```
 
 | Parameter | Type     | Description                |
