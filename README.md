@@ -97,11 +97,12 @@ The Spring application will run on port 8090.
 
 ## Deployment (Continuous Integration)
 
-To build this project automatically run
+To build this project automaticall= run
 
 ```bash
-  docker run -p 80:8080  --restart always -v jenkins_home:/var/jenkins_home jenkins/jenkins:lts-jdk11
+  docker run -u 0 --privileged --name jenkins -it -d -p 80:8080 -v /var/run/docker.sock:/var/run/docker.sock -v $(which docker):/usr/bin/docker -v jenkins_home:/var/jenkins_home jenkins/jenkins:lts-jdk11
 ```
+
 
 This will create a local running instance of Jenkins running on port 80.
 

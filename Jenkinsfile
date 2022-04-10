@@ -19,7 +19,9 @@ pipeline{
                         git 'https://github.com/jglick/simple-maven-project-with-tests.git'
 
                         // Run Maven on a Unix agent.
-                        sh "mvn -Dmaven.test.failure.ignore=true clean package"
+                        withMaven{
+                            sh "mvn -Dmaven.test.failure.ignore=true clean package"
+                        }
 
                         // To run Maven on a Windows agent, use
                         // bat "mvn -Dmaven.test.failure.ignore=true clean package"
@@ -35,26 +37,26 @@ pipeline{
                     }
         }
 
-		stage('Login') {
+// 		stage('Login') {
+//
+// 			steps {
+// 				sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+// 			}
+// 		}
 
-			steps {
-				sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
-			}
-		}
-
-		stage('Build Image') {
-
-		    steps {
-		        sh "docker build -t tui_git/spring:deploy ."
-		    }
-		}
-
-		stage('Push') {
-
-			steps {
-				sh 'docker push tui_gui/spring:deploy'
-			}
-		}
+// 		stage('Build Image') {
+//
+// 		    steps {
+// 		        sh "docker build -t tui_git/spring:deploy ."
+// 		    }
+// 		}
+//
+// 		stage('Push') {
+//
+// 			steps {
+// 				sh 'docker push tui_gui/spring:deploy'
+// 			}
+// 		}
 	}
 
 	post {
