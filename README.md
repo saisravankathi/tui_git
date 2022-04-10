@@ -79,3 +79,31 @@ This Springboot project lets us fetch the details of all the user owned reposito
 | `userId` | `string` | **Required**. userId |
 | `repo` | `string` | **Required**. repo |
 | `accept` | `header` |  `application/json`, `application/xml` |
+
+
+
+## Docker Images
+
+***Docker has to be installed as a pre-requisite before proceeding with the following steps**
+
+To create an image for this project, execute the below commands from the root directory where Dockerfile is located.
+
+```bash
+  docker build -t tui_git/spring:deploy .
+  docker run -p 8090:8080 tui_git/spring:deploy
+```
+The tag name `tui_git/spring` could be anything of your interest.
+The Spring application will run on port 8090.
+
+## Deployment (Continuous Integration)
+
+To build this project automatically run
+
+```bash
+  docker run -p 80:8080  --restart always -v jenkins_home:/var/jenkins_home jenkins/jenkins:lts-jdk11
+```
+
+This will create a local running instance of Jenkins running on port 80.
+
+[Jenkins](http://localhost:80), it can be accessed from here and basic pipeline with SCM has to be created and docker credentials are to be created in the credentials manager to push the generated Images to the Docker Hub or AWS, from where the Image can be deployed.
+
