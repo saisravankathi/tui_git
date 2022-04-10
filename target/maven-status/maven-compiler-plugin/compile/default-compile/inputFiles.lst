@@ -1,0 +1,10 @@
+/Users/saisravankathi/Interview/tui_git/src/main/java/com/kathi/github/integration/GITApiRest.java
+/Users/saisravankathi/Interview/tui_git/src/main/java/com/kathi/github/model/Branch.java
+/Users/saisravankathi/Interview/tui_git/src/main/java/com/kathi/github/service/GitService.java
+/Users/saisravankathi/Interview/tui_git/src/main/java/com/kathi/github/config/SwaggerConfig.java
+/Users/saisravankathi/Interview/tui_git/src/main/java/com/kathi/github/model/Request.java
+/Users/saisravankathi/Interview/tui_git/src/main/java/com/kathi/github/handlers/GitExceptionalHandler.java
+/Users/saisravankathi/Interview/tui_git/src/main/java/com/kathi/github/GithubOperationsApplication.java
+/Users/saisravankathi/Interview/tui_git/src/main/java/com/kathi/github/controller/GitController.java
+/Users/saisravankathi/Interview/tui_git/src/main/java/com/kathi/github/model/Author.java
+/Users/saisravankathi/Interview/tui_git/src/main/java/com/kathi/github/model/Repository.java
