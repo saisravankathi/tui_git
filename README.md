@@ -1,4 +1,10 @@
 
+# Live URL (Swagger UI)
+
+[Swagger](https://git-test-tui.herokuapp.com/swagger-ui.html) deployed on Heroku cloud.
+
+(***Note that, as there are rate limits on Github API for a non-logged in user, at times 403 Forbidden response is expected**)
+
 # Git Branches with Commit IDs
 
 This Springboot project lets us fetch the details of all the user owned repositories along with their branches and last commit IDs.
