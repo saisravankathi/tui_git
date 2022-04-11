@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: com.kathi.github.integration.GITApiRestTest
 -------------------------------------------------------------------------------
-Tests run: 11, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 3.609 s - in com.kathi.github.integration.GITApiRestTest
+Tests run: 11, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 3.828 s - in com.kathi.github.integration.GITApiRestTest

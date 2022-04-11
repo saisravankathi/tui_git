@@ -5,15 +5,18 @@ import com.kathi.github.model.Author;
 import com.kathi.github.model.Repository;
 import com.kathi.github.model.Request;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Component
 public class GitService {
+
+    private static String NOT_FOUND_MESSAGE = "Not Found";
 
     @Autowired
     GITApiRest gitApiRest;
@@ -21,7 +24,11 @@ public class GitService {
     public Author getAuthor(String userId, String accepts){
 
         if(StringUtils.hasLength(userId) && StringUtils.hasLength(accepts)){
-            return gitApiRest.checkForUserExistence(userId, accepts);
+            Author a =  gitApiRest.checkForUserExistence(userId, accepts);
+            if(a != null && a.getStatus() != null && a.getStatus().equalsIgnoreCase(String.valueOf(HttpStatus.NOT_FOUND.value()))){
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, NOT_FOUND_MESSAGE);
+            }
+            return a;
         }
 
         return new Author();
@@ -45,6 +52,9 @@ public class GitService {
             Author a = getAuthor(userId, accepts);
             r = gitApiRest.getBranchesForTheRepository(userId, accepts, repo);
             r.setAuthor(a);
+        }
+        if(r.getRepositories() == null){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, NOT_FOUND_MESSAGE);
         }
         return r;
     }

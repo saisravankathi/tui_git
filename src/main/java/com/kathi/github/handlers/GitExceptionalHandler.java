@@ -8,7 +8,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.util.HashMap;
@@ -34,5 +36,14 @@ public class GitExceptionalHandler extends ResponseEntityExceptionHandler {
         }
         headers.setContentType(MediaType.APPLICATION_JSON);
         return ResponseEntity.status(status).headers(headers).body(body);
+    }
+
+    @ExceptionHandler(ResponseStatusException.class)
+    protected ResponseEntity<Object> handleEntityNotFound(
+            ResponseStatusException ex) throws JsonProcessingException {
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("message", ex.getReason());
+        resultMap.put("status", String.valueOf(ex.getRawStatusCode()));
+        return new ResponseEntity<Object>(resultMap, ex.getStatus());
     }
 }

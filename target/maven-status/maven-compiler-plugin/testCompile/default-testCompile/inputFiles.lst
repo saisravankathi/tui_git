@@ -1,2 +1,5 @@
+/Users/saisravankathi/Interview/tui_git/src/test/java/com/kathi/github/AbstractTest.java
 /Users/saisravankathi/Interview/tui_git/src/test/java/com/kathi/github/GithubOperationsApplicationTests.java
+/Users/saisravankathi/Interview/tui_git/src/test/java/com/kathi/github/controller/GitControllerTest.java
 /Users/saisravankathi/Interview/tui_git/src/test/java/com/kathi/github/integration/GITApiRestTest.java
+/Users/saisravankathi/Interview/tui_git/src/test/java/com/kathi/github/service/GitServiceTest.java

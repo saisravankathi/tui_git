@@ -56,7 +56,7 @@ public class GitController {
         return gitService.getBranches(userId, repo, accepts);
     }
 
-    @PostMapping(value = "/all-user-info", produces = "application/json", consumes = {"application/json", "application/xml"})
+    @PostMapping(value = "/all-user-info", produces = "application/json", consumes = {"application/json"})
     @ApiOperation(value = "Returns all branches with last commit IDSs when user information is provided",
     response = List.class, tags = "Get Branches and Last Commit Information")
     @ApiResponses(value = {
