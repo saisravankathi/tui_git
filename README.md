@@ -108,3 +108,13 @@ This will create a local running instance of Jenkins running on port 80.
 
 [Jenkins](http://localhost:80), it can be accessed from here and basic pipeline with SCM has to be created and docker credentials are to be created in the credentials manager to push the generated Images to the Docker Hub or AWS, from where the Image can be deployed.
 
+
+# Metrics of the Pipeline dashboard
+
+TUI_GIT_DASHBOARD
+
+![DASHBOARD_IMAGE](https://github.com/saisravankathi/tui_git/blob/main/examples/jenkins_dashboard.png)
+
+TUI_TEST_PACKAGE_METRICS
+
+![TEST_METRICS](https://github.com/saisravankathi/tui_git/blob/main/examples/jenkins_test.png)
